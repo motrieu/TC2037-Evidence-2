@@ -1,0 +1,294 @@
+\documentclass{article}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{qtree}
+
+\title{Evidence 2 - Generating and Cleaning a Restricted Context Free Grammar}
+\author{Moritz Trieu}
+\date{May 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Languages can be categorized into different categories, called the Chomsky hierarchy. Descriptopns 
+can be found by \cite{g4g-chomsky}. The language in this evidence is set out to be
+parsed with an LL(1) parser which is a top-down parser without backtracking as explained in \cite{enwiki-ll}.
+
+\section{Language}
+The language chosen was the Prolog programming language as for example described in \cite{enwiki-prolog}. In comparison to other languages, Prolog does not become incredibly complex. Still there are quite a few aspects. Therefore to keep the scope contained, only features used during the lecture where considered. These are predicates, clauses, lists and the cut operator, whichb aren also explained in \cite{boklm-prolog}.
+
+\subsection{Structure and Terminals}
+While not necessary in Prolog itself, here the restriction is made that all predicates have to come before any clause. As this is usually done in practice, this doesn't display a big restriction and simplifies the grammar going forward. A predicate consists of a name, braces, possible arguments and an ending ".". Since the name of the predicate can consist of a string that follows certain rules but is otherwise ambiguous, defining a vocabulary as with other languages seems futile. Instead, the name can be categorized by lexical analysis; therefore, the decision was made to only have one categorical terminal $\gamma$ which represents all valid predicate names.  The same goes for the attributes, which are represented by the terminal $\alpha$. More than a name or a string an attribute can also be a list. Lists can be represented in two ways, either fully written out like "[a, b, c, d]" or as a head-tail representation "[H-T]". Note that "-" was substituted for "$|$" to avoid notational confusion later on. 
+
+Finally, a clause consists of a name, attributes, the symbol ":-" and a string of an ambiguous number of predicates and cut operators, delimited by commas or semicolons.
+
+\subsection{Initial Grammar}
+This description leads to the first grammar model.
+
+% \begin{lstlisting}[mathescape=true]
+%     S -> P C
+%     P -> P $\gamma$(I). | $\epsilon$
+%     I -> A | $\epsilon$
+%     A -> A,A | $\alpha$|[Z]
+%     F -> L | $\epsilon$
+%     L -> $\alpha$ - $\alpha$ | A | [T] - $\alpha$
+%     C -> $\mu$(W) :- B.C | $\epsilon$
+%     W -> V | $\epsilon$
+%     V -> V,V | $\nu$
+%     B -> B,B | B;B | $\gamma$(I) | !
+% \end{lstlisting}
+\begin{lstlisting}[mathescape=true]
+E -> P C
+P -> P $\gamma$ ( A ) | $\epsilon$
+A ->  A, A | $\alpha$ | [ T ]
+T -> [ T ] T'' | $\alpha$ T' | $\epsilon$ 
+T' -> - A' | , T | $\epsilon$
+T'' -> , T | $\epsilon$
+C ->  $\mu$ ( W ) :- B . C | $\epsilon$
+W -> V | $\epsilon$  
+V -> V , V | $\nu$
+B -> B , B | B ; B | $\gamma$ ( A ) | !
+\end{lstlisting}
+
+ Since we want this grammar to be compatible with an LL(1) parser, we need to analyze for ambiguity.
+ As LL(1) doesn't use backtracking, the grammar needs to be deterministic as explained in \cite{enwiki-ll}.
+ We can see for example the generation of attributes in ambiguous.
+The attribute series "$\alpha,\alpha,\alpha$" can be generated in two ways as can be seen in Fig. \ref{fig:ambguity}. The same can be done for
+
+\begin{lstlisting}[mathescape=true]
+    V -> V,V | $\nu$
+    B -> B,B | B;B | $\gamma$(I) | !
+\end{lstlisting}.
+
+\begin{figure}
+    \centering
+     \begin{subfigure}{0.4\textwidth}       
+        \Tree [.I [.A $\alpha$ ] [.A [.A $\alpha$ ] [.A $\alpha$ ] ]  ]
+        \caption{Expanding from the right}
+     \end{subfigure}
+     \begin{subfigure}{0.4\textwidth}
+        \Tree [.I [.A [.A $\alpha$ ] [.A $\alpha$ ] ] [.A $\alpha$ ] ]
+        \caption{Expanding from the left}
+     \end{subfigure}
+    \caption{Three attributes can be generated in more then one way.}
+    \label{fig:ambguity}
+\end{figure}
+
+\subsection{Eliminating Ambiguity}
+To eliminate ambiguity, an extra step needs to be added as explained in \cite{g4g-ambig}.
+Thus, the aforementioned rules become
+\begin{lstlisting}[mathescape=true]
+E -> P C
+P -> P $\gamma$ ( A ) | $\epsilon$
+A ->  A, A'
+A' -> $\alpha$ | [ T ]
+T -> [ T ] T'' | $\alpha$ T' | $\epsilon$ 
+T' -> - A' | , T | $\epsilon$
+T'' -> , T | $\epsilon$
+C ->  $\mu$ ( W ) :- B . C | $\epsilon$
+W -> V | $\epsilon$  
+V -> V, V'
+V' -> $\nu$
+B -> B , B' 
+B' -> B ' ; B'''  
+B''' -> $\gamma$ ( A ) | !
+\end{lstlisting}
+
+% \begin{lstlisting}[mathescape=true]
+%    A -> A, A' | A'
+%    A' -> $\alpha$ | [F]
+%    V -> V, V' | V'
+%    V' -> $\nu$
+%    B -> B, B' | B'
+%    B' -> B'; B'' | B''
+%    B'' -> $\gamma$(I) | !
+% \end{lstlisting}
+If we now try to rebuild "$\alpha,\alpha,\alpha$", we can see in Fig. \ref{fig:updated_grammar} it can now only be build in one way.
+\begin{figure}
+    \Tree [.I [.A [.A' $\alpha$ ] [.A [.A' $\alpha$ ] [.A  [.A' $\alpha$ ] ] ]  ]]
+    \caption{Building $\alpha,\alpha,\alpha$ using the updated grammar}
+    \label{fig:updated_grammar}
+\end{figure}
+
+\section{Eliminate Left Recursion}
+Left recursion appears whenever a production calls itself in the leftmost side as we can observe for example for 
+\begin{lstlisting}[mathescape=true]
+    P -> P $\gamma$(I). | $\epsilon$
+\end{lstlisting}
+To eliminate left recursion, as explained in \cite{maza-left}, the production is substituted with another production that starts
+with a terminal and goes into a intermediate step that can result into empty. 
+
+\begin{lstlisting}[mathescape=true]
+    P -> P'
+    P' -> $\gamma$(I).P' | $\epsilon$ 
+\end{lstlisting}
+This results in a tree as can be seen in Fig. \ref{fig:right-rec}.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \Tree [.P [.P $\epsilon$ ] $\gamma (...)$ ]
+        \caption{A grammar rule that contains left-recursion. The tree can indefinetly expand to the left.}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \Tree [.P  [ .P' $\gamma (...)$ [.P' $\epsilon$ ] ] ]
+        \caption{Changes grammar to right-recursion. Now the tree grows to the right.}
+    \end{subfigure}
+    \caption{Changing the left-recursion to right recursion by adding an intermediate step.}
+    \label{fig:right-rec}
+\end{figure}
+
+\subsection{Final Grammar}
+With all these changes we get to the final grammar rules:
+% \begin{lstlisting}[mathescape=true]
+%     S -> PC
+%     P -> P'
+%     P' -> $\gamma$(I).P' | $\epsilon$ 
+%     I -> A | $\epsilon$
+%     A -> A',A | A'
+%     A' -> $\alpha$ | [F]
+%     F -> L | $\epsilon$
+%     L -> $\alpha$ - $\alpha$ | A | [F] - $\alpha$
+%     C -> $\mu$(W) :- B.C | $\epsilon$
+%     W -> V | $\epsilon$
+%     V -> V,V | V'
+%     V' -> $\nu$
+%     B -> B',B | B'
+%     B' -> B'';B' | B''
+%     B'' -> $\gamma$(I) | !
+% \end{lstlisting}
+
+\begin{lstlisting}[mathescape=true]
+E -> P C
+P -> P'
+P' -> $\gamma$ ( A ) . P' | $\epsilon$
+A ->  A' A'' | $\epsilon$
+A'' ->  , A' A'' | $\epsilon$
+A' -> $\alpha$ | [ T ]
+T -> [ T ] T' | $\alpha$ T' | $\epsilon$ 
+T' -> - A' | , T | $\epsilon$
+T'' -> , T | $\epsilon$
+C ->  $\mu$ ( W ) :- B . C | $\epsilon$
+W -> V | $\epsilon$  
+V -> V' V'' 
+V'' ->  , V' V'' | $\epsilon$
+V' -> $\nu$
+B -> B' B'' 
+B'' -> , B' B'' | $\epsilon$
+B' -> B'''  B'''' 
+B'''' -> ; B''' B'''' | $\epsilon$
+B''' -> $\gamma$ ( A ) | !
+\end{lstlisting}
+
+\section{Implementation and Testing}
+Using the \verb|nltk| python library from \cite{nltk} a series of test sentences was parsed with LL1 using the 
+cleaned grammar. The implementation can be found in \verb|parser.ipynb|. The test sentences are
+parted into two subsets, sentences the grammar should accept and sentences that should be rejected.
+For the accepted sentences, the parser returns the syntax-trees. Since ambiguity has been removed, there
+needs to be exactly one tree possible. 
+
+The accepted sentences set is 
+\begin{enumerate}
+    \item gamma ( ) .
+    \item gamma ( alpha ) .
+    \item gamma ( alpha , alpha , alpha ) .
+    \item gamma ( [ ] , alpha ) .
+    \item gamma ( alpha , [ ] ) .
+    \item gamma ( alpha , [ [ ] ] ) .
+    \item gamma ( alpha , [ alpha - alpha ] ) .
+    \item gamma ( alpha , [ alpha - [ alpha ] ] ) .
+    \item gamma ( alpha , [ alpha , alpha , alpha ] ) .
+    \item gamma ( alpha , [ alpha , [ alpha , alpha ] , alpha ] ) .
+    \item gamma ( alpha ) . gamma ( alpha ) .
+    \item mu ( nu , nu ) :- gamma ( alpha ) , gamma ( alpha ) . mu ( ) :- gamma ( ) ; gamma ( ) , ! .  
+\end{enumerate}
+Sentences 1. - 3. \& 11 test predicate grammar, sentences 4. - 10. test lists and sentence 12 tests clause grammar.
+
+The sentences that should be rejected are 
+\begin{enumerate}
+    \item gamma alpha
+    \item gamma ( alpha alpha ) .
+    \item gamma ( alpha , alpha )
+    \item gamma ( alpha , [ [ alpha ] - alpha ] ) .
+    \item mu ( nu , nu ) :- gamma ( alpha )
+    \item mu ( nu  nu ) :- gamma ( alpha ) .
+    \item mu ( nu , nu ) :- gamma ( alpha ) mu ( nu , nu ) :- gamma ( alpha )
+    \item gamma ( alpha , alpha ) mu ( nu , nu ) :- gamma ( alpha ) . 
+\end{enumerate}
+and include various errors such as missing terminals or wrong construction of lists.
+
+\section{Analysis}
+Due to its nature, the language from the begining is set out to be a context-free language. A push-down automaton
+is required to keep track of the sentence generation, thus it is above a regular language.
+Since the cleaned grammar is designed to be parsed by LL(1) it is also a context-free grammar instead of a grammar-sensitive language.
+When looking at the description of a context sensitive language as in \cite{g4g-csg}, the initial grammar
+doesn't utilize any context clues, thus both the initial and cleaned grammar are context-free languages, which makes intuetivly sense given
+the programatic nature of the language grammar.
+
+\bibliographystyle{apalike}
+\bibliography{resources}
+
+\end{document}
+
+E ::= P C
+P ::= P'
+P' ::= gamma ( A ) . P' 
+P' ::= ''
+A ::= ''
+A ::=   A' A''
+A'' ::= ''
+A'' ::=  , A' A''
+A' ::= alpha 
+A' ::=  [ T ]
+T ::= ''
+T ::= [ T ]
+T ::= alpha T'
+T' ::= - A'
+T' ::= , T
+T' ::= ''
+C ::= ''
+C ::= mu ( W ) :- B . C 
+W ::= ''
+W ::= V 
+V ::= V' V'' 
+V'' ::= ''
+V'' ::= , V' V''
+V' ::= nu
+B ::= B' B'' 
+B'' ::= , B' B''
+B'' ::= ''
+B' ::= B'''  B'''' 
+B'''' ::= ; B''' B''''
+B'''' ::= ''
+B''' ::= gamma ( A ) 
+B''' ::= !
+
+
+gamma ( ) .
+gamma ( alpha ) .
+gamma ( alpha , alpha , alpha) .
+gamma ( [ ] , alpha ) .
+gamma ( alpha , [ ] ) .
+gamma ( alpha , [ [ ] ] ) .
+gamma ( alpha , [ alpha - alpha ] ) .
+gamma ( alpha , [ alpha , alpha , alpha ] ) .
+gamma ( alpha , [ alpha , [ alpha , alpha ] , alpha ] ) .
+gamma ( alpha ) . gamma ( alpha ) .
+mu ( nu , nu ) :- gamma ( alpha ) , gamma ( alpha ) . mu ( ) :- gamma ( ) ; gamma ( ) , ! .
+ 
+
+gamma alpha
+gamma ( alpha alpha ) .
+gamma ( alpha , alpha )
+gamma ( alpha , [ [ alpha ] - alpha ] ) .
+gamma ( alpha , [ alpha - [ alpha ] ] ) .
+mu ( nu , nu ) :- gamma ( alpha )
+mu ( nu  nu ) :- gamma ( alpha ) .
+mu ( nu , nu ) :- gamma ( alpha ) mu ( nu , nu ) :- gamma ( alpha )
+gamma ( alpha , alpha ) mu ( nu , nu ) :- gamma ( alpha ) . 

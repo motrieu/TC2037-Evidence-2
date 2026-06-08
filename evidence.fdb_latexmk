@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex evidence"] 1780881839.87216 "evidence.aux" "evidence.bbl" "evidence" 1780884845.48963 0
+["bibtex evidence"] 1780881839.87216 "evidence.aux" "evidence.bbl" "evidence" 1780885295.20192 0
   "./resources.bib" 1780881836 2272 571c0fb9776360611ca4a9c45a7fcb44 ""
   "C:/Users/morit/AppData/Local/Programs/MiKTeX/bibtex/bst/bibtex/apalike.bst" 1291972791 24635 604dafcc79f521a11ea73e506e1fbd98 ""
-  "evidence.aux" 1780884843 2297 74da21a28b9097b6f4ecf8e7f4add779 "pdflatex"
+  "evidence.aux" 1780885293 2297 74da21a28b9097b6f4ecf8e7f4add779 "pdflatex"
   (generated)
   "evidence.bbl"
   "evidence.blg"
   (rewritten before read)
-["pdflatex"] 1780884842.33997 "c:/Uni/Tec/TC2037-Metodos/Evidence/TC2037-Evidence-2/evidence.tex" "evidence.pdf" "evidence" 1780884845.49143 0
+["pdflatex"] 1780885292.14385 "c:/Uni/Tec/TC2037-Metodos/Evidence/TC2037-Evidence-2/evidence.tex" "evidence.pdf" "evidence" 1780885295.20386 0
   "C:/Users/morit/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1779231492 80909 eab91d9745dd2edfd62a31d53cd5fe15 ""
   "C:/Users/morit/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/tcrm1000.pk" 1773448929 11548 07d375b85aa743b5c4f0b977d2f0dec5 ""
   "C:/Users/morit/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1772691628 13333848 22633f4813b32010c68144454fd97faa ""
@@ -75,10 +75,10 @@
   "C:/Users/morit/AppData/Local/Programs/MiKTeX/tex/latex/pict2e/pict2e.cfg" 1601744510 2000 2185073db458618f4a8a794158cf3681 ""
   "C:/Users/morit/AppData/Local/Programs/MiKTeX/tex/latex/pict2e/pict2e.sty" 1601744510 31753 ccdcd551eb516817cc8f41862254e6e7 ""
   "C:/Users/morit/AppData/Local/Programs/MiKTeX/tex/latex/qtree/qtree.sty" 1232781000 37840 af733ddbac7a85c7a51356efa3682b6c ""
-  "c:/Uni/Tec/TC2037-Metodos/Evidence/TC2037-Evidence-2/evidence.tex" 1780884840 11712 fd6f082abcd6040e6259074df9f43949 ""
-  "evidence.aux" 1780884843 2297 74da21a28b9097b6f4ecf8e7f4add779 "pdflatex"
+  "c:/Uni/Tec/TC2037-Metodos/Evidence/TC2037-Evidence-2/evidence.tex" 1780885289 11716 f2c2b7c274e1bac788362a68791f307a ""
+  "evidence.aux" 1780885293 2297 74da21a28b9097b6f4ecf8e7f4add779 "pdflatex"
   "evidence.bbl" 1780881840 1102 0b41c623aae24767cdf6991328f042f1 "bibtex evidence"
-  "evidence.tex" 1780884840 11712 fd6f082abcd6040e6259074df9f43949 ""
+  "evidence.tex" 1780885289 11716 f2c2b7c274e1bac788362a68791f307a ""
   (generated)
   "evidence.aux"
   "evidence.log"

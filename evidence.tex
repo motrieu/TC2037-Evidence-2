@@ -45,7 +45,7 @@ This description leads to the first grammar model.
 % \end{lstlisting}
 \begin{lstlisting}[mathescape=true]
 E -> P C
-P -> P $\gamma$ ( A ) | $\epsilon$
+P -> P $\gamma$ ( A ) . | $\epsilon$
 A ->  A, A | $\alpha$ | [ T ]
 T -> [ T ] T'' | $\alpha$ T' | $\epsilon$ 
 T' -> - A' | , T | $\epsilon$
@@ -85,7 +85,7 @@ To eliminate ambiguity, an extra step needs to be added as explained in \cite{g4
 Thus, the aforementioned rules become
 \begin{lstlisting}[mathescape=true]
 E -> P C
-P -> P $\gamma$ ( A ) | $\epsilon$
+P -> P $\gamma$ ( A ) . | $\epsilon$
 A ->  A, A'
 A' -> $\alpha$ | [ T ]
 T -> [ T ] T'' | $\alpha$ T' | $\epsilon$ 

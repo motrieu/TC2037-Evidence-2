@@ -16,12 +16,12 @@
 \maketitle
 
 \section{Introduction}
-Languages can be categorized into different categories, called the Chomsky hierarchy. Descriptopns 
+Languages can be categorized into different categories, for example through the Chomsky hierarchy. Description 
 can be found by \cite{g4g-chomsky}. The language in this evidence is set out to be
 parsed with an LL(1) parser which is a top-down parser without backtracking as explained in \cite{enwiki-ll}.
 
 \section{Language}
-The language chosen was the Prolog programming language as for example described in \cite{enwiki-prolog}. In comparison to other languages, Prolog does not become incredibly complex. Still there are quite a few aspects. Therefore to keep the scope contained, only features used during the lecture where considered. These are predicates, clauses, lists and the cut operator, whichb aren also explained in \cite{boklm-prolog}.
+The language chosen was the Prolog programming language as for example described in \cite{enwiki-prolog}. In comparison to other languages, Prolog does not become incredibly complex. Still there are quite a few aspects to be considered. Therefore, to keep the scope contained, only features used during the lecture were considered. These are predicates, clauses, lists and the cut operator, which are also explained in \cite{boklm-prolog}.
 
 \subsection{Structure and Terminals}
 While not necessary in Prolog itself, here the restriction is made that all predicates have to come before any clause. As this is usually done in practice, this doesn't display a big restriction and simplifies the grammar going forward. A predicate consists of a name, braces, possible arguments and an ending ".". Since the name of the predicate can consist of a string that follows certain rules but is otherwise ambiguous, defining a vocabulary as with other languages seems futile. Instead, the name can be categorized by lexical analysis; therefore, the decision was made to only have one categorical terminal $\gamma$ which represents all valid predicate names.  The same goes for the attributes, which are represented by the terminal $\alpha$. More than a name or a string an attribute can also be a list. Lists can be represented in two ways, either fully written out like "[a, b, c, d]" or as a head-tail representation "[H-T]". Note that "-" was substituted for "$|$" to avoid notational confusion later on. 
@@ -56,9 +56,9 @@ V -> V , V | $\nu$
 B -> B , B | B ; B | $\gamma$ ( A ) | !
 \end{lstlisting}
 
- Since we want this grammar to be compatible with an LL(1) parser, we need to analyze for ambiguity.
+ Since we want this grammar to be compatible with an LL(1) parser, we need to analyze for ambiguity and left recursion.
  As LL(1) doesn't use backtracking, the grammar needs to be deterministic as explained in \cite{enwiki-ll}.
- We can see for example the generation of attributes in ambiguous.
+ We can see for example that the generation of attributes is ambiguous.
 The attribute series "$\alpha,\alpha,\alpha$" can be generated in two ways as can be seen in Fig. \ref{fig:ambguity}. The same can be done for
 
 \begin{lstlisting}[mathescape=true]
@@ -121,7 +121,7 @@ Left recursion appears whenever a production calls itself in the leftmost side a
 \begin{lstlisting}[mathescape=true]
     P -> P $\gamma$(I). | $\epsilon$
 \end{lstlisting}
-To eliminate left recursion, as explained in \cite{maza-left}, the production is substituted with another production that starts
+As the string is parsed from left to right in LL(1), the tree must not extend indefinetly to the left side. To eliminate left recursion, as explained in \cite{maza-left}, the production is substituted with another production that starts
 with a terminal and goes into a intermediate step that can result into empty. 
 
 \begin{lstlisting}[mathescape=true]
@@ -187,7 +187,7 @@ B''' -> $\gamma$ ( A ) | !
 \end{lstlisting}
 
 \section{Implementation and Testing}
-Using the \verb|nltk| python library from \cite{nltk} a series of test sentences was parsed with LL1 using the 
+Using the \verb|nltk| python library from \cite{nltk} a series of test sentences were parsed with LL(1) using the 
 cleaned grammar. The implementation can be found in \verb|parser.ipynb|. The test sentences are
 parted into two subsets, sentences the grammar should accept and sentences that should be rejected.
 For the accepted sentences, the parser returns the syntax-trees. Since ambiguity has been removed, there

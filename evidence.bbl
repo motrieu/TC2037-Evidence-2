@@ -1,0 +1,37 @@
+\begin{thebibliography}{}
+
+\bibitem[Geeks-For-Geeks, 2026a]{g4g-ambig}
+Geeks-For-Geeks (2026a).
+\newblock Ambiguous grammar.
+
+\bibitem[Geeks-For-Geeks, 2026b]{g4g-chomsky}
+Geeks-For-Geeks (2026b).
+\newblock Chomsky hierarchy in theory of computation.
+
+\bibitem[Geeks-For-Geeks, 2026c]{g4g-csg}
+Geeks-For-Geeks (2026c).
+\newblock Context-sensitive grammar (csg) and language (csl).
+
+\bibitem[Loiseleur and Vigier., 2001]{boklm-prolog}
+Loiseleur, M. and Vigier., N. (2001).
+\newblock Prolog.
+
+\bibitem[Maza, 2004]{maza-left}
+Maza, M.~M. (2004).
+\newblock Elimination of left recursion.
+
+\bibitem[NLTK-Project, 2025]{nltk}
+NLTK-Project (2025).
+\newblock Nltk.
+
+\bibitem[{Wikipedia-Contributors}, 2026a]{enwiki-ll}
+{Wikipedia-Contributors} (2026a).
+\newblock Ll parser --- {Wikipedia}{,} the free encyclopedia.
+\newblock [Online; accessed 4-June-2026].
+
+\bibitem[{Wikipedia-Contributors}, 2026b]{enwiki-prolog}
+{Wikipedia-Contributors} (2026b).
+\newblock Prolog --- {Wikipedia}{,} the free encyclopedia.
+\newblock [Online; accessed 4-June-2026].
+
+\end{thebibliography}
